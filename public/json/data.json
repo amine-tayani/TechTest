@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "thumbnail": "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1296&q=80",
+    "price": "$4937.45",
+    "location": "Chicago IL"
+  },
+  {
+    "id": 2,
+    "thumbnail": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    "price": "$5137.45",
+    "location": "Beverly Hills CA"
+  },
+  {
+    "id": 3,
+    "thumbnail": "https://images.unsplash.com/photo-1592595896551-12b371d546d5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    "price": "$9120.45",
+    "location": "Seattle WA"
+  },
+  {
+    "id": 4,
+    "thumbnail": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
+    "price": "$7337.45",
+    "location": "Detroit MI"
+  },
+  {
+    "id": 5,
+    "thumbnail": "https://images.unsplash.com/photo-1448630360428-65456885c650?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80",
+    "price": "$8937.45",
+    "location": "Cedar park TX"
+  },
+  {
+    "id": 6,
+    "thumbnail": "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    "price": "$2937.45",
+    "location": "Cedar Rapids IA"
+  }
+]
