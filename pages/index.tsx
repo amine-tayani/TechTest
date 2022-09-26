@@ -1,39 +1,25 @@
 import * as React from "react";
-import axios from "axios";
 import type { NextPage } from "next";
-import Head from "next/head";
-import CardList from "../components/CardList";
-import Hero from "../components/Hero";
-import Navbar from "../components/Navbar";
+import { UProps } from "../types/autocomplete";
+import AutoComplete from "../components/AutoComplete";
 
 const Home: NextPage = () => {
-  const [houses, setHouses] = React.useState();
+  const [users, setUsers] = React.useState<UProps[]>([]);
 
   React.useEffect(() => {
-    axios.get("/json/data.json").then((res) => {
-      setHouses(res.data);
-    });
+    const fetchUsers = async () => {
+      const response = await fetch(
+        "https://randomuser.me/api/?inc=name,picture&results=30"
+      );
+      const data = await response.json();
+      setUsers(data.results);
+    };
+    fetchUsers();
   }, []);
 
   return (
-    <div className=" font-poppins">
-      <Head>
-        <title>Aleia.io</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-      <Navbar />
-      <Hero />
-      <CardList houses={houses} />
+    <div className="font-[inter] justify-center flex flex-col items-center min-h-screen bg-slate-900">
+      <AutoComplete users={users} />
     </div>
   );
 };
