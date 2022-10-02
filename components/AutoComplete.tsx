@@ -1,23 +1,38 @@
+import clsx from "clsx";
 import * as React from "react";
-import { UProps, UserListProps } from "../types/autocomplete";
+import { IResult, SearchAutocompleteProps } from "../types/autocomplete";
 
-const AutoComplete: React.FunctionComponent<UserListProps> = ({ users }) => {
+const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
   const [activeSuggestion, setActiveSuggestion] = React.useState(0);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const searchBarRef = React.useRef<HTMLInputElement>(null);
+  const [focused, setFocused] = React.useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = React.useState<
-    UProps[]
+    IResult[]
   >([]);
   const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [searchString, setSearchString] = React.useState("");
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "x") {
+        searchBarRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const onFocused = () => setFocused(true);
+  const onBlurred = () => setFocused(false);
+
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const searchString = e.currentTarget.value;
 
-    const filteredSuggestions = users.filter((suggestion) =>
+    const filteredSuggestions = items?.filter((suggestion) =>
       suggestion.name.first.toLowerCase().startsWith(searchString.toLowerCase())
     );
     setActiveSuggestion(0);
-    setFilteredSuggestions(filteredSuggestions);
+    setFilteredSuggestions(filteredSuggestions || []);
     setShowSuggestions(true);
     setSearchString(e.currentTarget.value);
   };
@@ -53,11 +68,14 @@ const AutoComplete: React.FunctionComponent<UserListProps> = ({ users }) => {
         setActiveSuggestion(activeSuggestion - 1);
         break;
       case "ArrowDown":
-        if (activeSuggestion - 1 === filteredSuggestions.length) {
+        if (activeSuggestion === filteredSuggestions.length) {
           return;
-        }
-        setActiveSuggestion(activeSuggestion + 1);
+        } else if (activeSuggestion === filteredSuggestions.length - 1) {
+          setActiveSuggestion(0);
+        } else setActiveSuggestion(activeSuggestion + 1);
         break;
+      case "Escape":
+        clearSearchInput();
       default:
         break;
     }
@@ -65,17 +83,17 @@ const AutoComplete: React.FunctionComponent<UserListProps> = ({ users }) => {
 
   const clearSearchInput = () => {
     setShowSuggestions(false);
-    if (inputRef.current !== null) {
-      inputRef.current.value = "";
+    if (searchBarRef.current !== null) {
+      searchBarRef.current.value = "";
     }
   };
 
   return (
-    <div className=" w-1/3 max-w-lg bg-[#1e293b] rounded-xl shadow-lg">
+    <div className=" w-1/3 max-w-lg bg-[#28292b] rounded-xl shadow-lg">
       <div className="relative">
         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
           <svg
-            className="h-6 w-6 text-gray-500"
+            className="h-6 w-6 text-neutral-500"
             strokeWidth="1.5"
             viewBox="0 0 24 24"
             fill="none"
@@ -91,15 +109,17 @@ const AutoComplete: React.FunctionComponent<UserListProps> = ({ users }) => {
           </svg>
         </div>
         <input
+          onFocus={onFocused}
+          onBlur={onBlurred}
           onKeyDown={onKeyDown}
-          ref={inputRef}
+          ref={searchBarRef}
           onChange={onChange}
           type="text"
-          className={`w-full pl-10 p-4 rounded-lg placeholder:font-medium text-lg font-medium placeholder:text-slate-300 focus:outline-none text-slate-200  shadow-sm bg-[#1e293b]`}
+          className={`w-full pl-10 p-4 caret-blue-600 rounded-lg placeholder:font-medium placeholder:text-neutral-500 text-lg font-medium  focus:outline-none text-slate-200  shadow-sm bg-[#2b2c2e]`}
           placeholder="Search for keyword"
           style={{
             borderBottom:
-              showSuggestions && searchString ? "1px solid #4b5563" : "none",
+              showSuggestions && searchString ? "1px solid #3c3d41" : "none",
             borderRadius:
               showSuggestions && searchString
                 ? "0.375rem 0.375rem 0 0"
@@ -107,10 +127,22 @@ const AutoComplete: React.FunctionComponent<UserListProps> = ({ users }) => {
           }}
         />
 
+        <div
+          className={clsx(
+            "flex absolute rounded-lg inset-y-0 right-0 items-center mx-4 pointer-events-none",
+            {
+              hidden: focused,
+            }
+          )}
+        >
+          <div className="text-[#8e9299] shadow-lg font-semibold bg-[#393a3c] py-1 px-2.5 rounded-md ">
+            ⌘ +<span className="ml-2">X</span>
+          </div>
+        </div>
         {showSuggestions && searchString && (
           <button
             onClick={clearSearchInput}
-            className="absolute right-0 w-7 h-6 inset-y-4 mr-6 text-[0.5em] font-semibold rounded-md bg-gray-600 text-gray-300 border-gray-500"
+            className="absolute right-0 w-7 h-6 inset-y-4 mr-6 text-[0.5em] font-semibold rounded-md bg-neutral-600 text-neutral-300 border-neutral-500"
           >
             CLR
           </button>
@@ -132,8 +164,8 @@ const AutoComplete: React.FunctionComponent<UserListProps> = ({ users }) => {
                   key={id}
                   style={{
                     backgroundColor:
-                      activeSuggestion === id ? "#0284c7" : "#3341554d",
-                    color: activeSuggestion === id ? "#eee" : "#94a3b8",
+                      activeSuggestion === id ? "#0284c7" : "#3c3d41",
+                    color: activeSuggestion === id ? "#eee" : "#c1c2c6",
                   }}
                 >
                   <div className="flex items-center space-x-4">

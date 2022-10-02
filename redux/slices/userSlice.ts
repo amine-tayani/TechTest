@@ -1,36 +1,46 @@
-import { createSlice, PayloadAction, Draft } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
-export interface UserState {
-  email: string;
-  password: string;
+import { IResult } from "../../types/autocomplete";
+
+export interface IUserState {
+  users: IResult[];
+  loading: boolean;
 }
 
-const initialState: UserState = {
-  email: "",
-  password: "",
-} as const;
+const initialState: IUserState = {
+  users: [],
+  loading: false,
+};
+
+export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
+  const res = await fetch(
+    "https://randomuser.me/api/?inc=name,picture&results=30"
+  );
+  const data = await res.json();
+  return data.results;
+});
 
 export const userSlice = createSlice({
-  name: "user",
+  name: "users",
   initialState,
   reducers: {
-    setEmail: (
-      state: Draft<typeof initialState>,
-      action: PayloadAction<typeof initialState.email>
-    ) => {
-      state.email = action.payload;
+    getUsers: (state, action: PayloadAction<IResult[]>) => {
+      state.users = action.payload;
     },
-    setPassword: (
-      state: Draft<typeof initialState>,
-      action: PayloadAction<typeof initialState.password>
-    ) => {
-      state.password = action.payload;
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUsers.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
+      state.loading = false;
+      state.users = action.payload.results;
+    });
   },
 });
 
-export const getUserState = (state: { user: UserState }) => state.user;
+// need some typing help here
 
-export const { setEmail, setPassword } = userSlice.actions;
+export const { getUsers } = userSlice.actions;
 
 export default userSlice.reducer;

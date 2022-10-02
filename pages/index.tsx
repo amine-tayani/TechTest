@@ -1,25 +1,24 @@
 import * as React from "react";
 import type { NextPage } from "next";
-import { UProps } from "../types/autocomplete";
 import AutoComplete from "../components/AutoComplete";
+import { useGetUsersQuery } from "../redux/usersApi";
 
 const Home: NextPage = () => {
-  const [users, setUsers] = React.useState<UProps[]>([]);
+  const [items, setItems] = React.useState([]);
+  const { data: users } = useGetUsersQuery();
+
+  //  check if the user press the S key
 
   React.useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await fetch(
-        "https://randomuser.me/api/?inc=name,picture&results=30"
-      );
-      const data = await response.json();
-      setUsers(data.results);
-    };
-    fetchUsers();
-  }, []);
+    if (users) {
+      // @ts-ignore
+      setItems(users?.results);
+    }
+  }, [users]);
 
   return (
-    <div className="font-[inter] justify-center flex flex-col items-center min-h-screen bg-slate-900">
-      <AutoComplete users={users} />
+    <div className="font-[inter] justify-center flex flex-col items-center min-h-screen bg-[#1a1b1d]">
+      <AutoComplete items={items} />
     </div>
   );
 };

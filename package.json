@@ -10,6 +10,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "^0.27.2",
+    "clsx": "^1.2.1",
     "next": "latest",
     "react": "18.1.0",
     "react-dom": "18.1.0",

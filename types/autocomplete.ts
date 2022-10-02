@@ -1,4 +1,4 @@
-export interface UProps {
+export interface IResult {
   name: {
     first: string;
     last: string;
@@ -11,6 +11,6 @@ export interface UProps {
   };
 }
 
-export interface UserListProps {
-  users: UProps[];
+export interface SearchAutocompleteProps {
+  items?: IResult[];
 }

@@ -1,22 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userSlice from "./slices/userSlice";
-import {
-  useDispatch as useDispatcher,
-  useSelector as useSelect,
-} from "react-redux";
 
-export const store = configureStore({
+import { usersApi } from "./usersApi";
+
+const store = configureStore({
   reducer: {
-    user: userSlice,
+    [usersApi.reducerPath]: usersApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(usersApi.middleware),
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-
-type AppDispatch = typeof store.dispatch;
-
-export const useDispatch = () => useDispatcher<AppDispatch>();
-
-export const useSelector = <TSelected = unknown>(
-  selector: (state: RootState) => TSelected
-) => useSelect<RootState, TSelected>(selector);
+export default store;
