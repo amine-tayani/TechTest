@@ -63,9 +63,8 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         break;
       case "ArrowUp":
         if (activeSuggestion === 0) {
-          return;
-        }
-        setActiveSuggestion(activeSuggestion - 1);
+          setActiveSuggestion(filteredSuggestions.length - 1);
+        } else setActiveSuggestion(activeSuggestion - 1);
         break;
       case "ArrowDown":
         if (activeSuggestion === filteredSuggestions.length) {
