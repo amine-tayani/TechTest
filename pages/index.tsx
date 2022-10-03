@@ -17,7 +17,16 @@ const Home: NextPage = () => {
   }, [users]);
 
   return (
-    <div className="font-[inter] justify-center flex flex-col items-center min-h-screen bg-[#1a1b1d]">
+    <div className="font-[inter] flex flex-col items-center min-h-screen bg-[#1a1b1d]">
+      <div className="my-12">
+        <p className="flex text-neutral-100 font-bold text-3xl items-center">
+          Use
+          <div className="mx-2 shadow-lg font-semibold text-[#a0a4aa] text-lg bg-[#393a3c] py-1.5 px-4 rounded-md ">
+            ⌘ +<span className="ml-2">X</span>
+          </div>
+          to search for users{" "}
+        </p>
+      </div>
       <AutoComplete items={items} />
     </div>
   );

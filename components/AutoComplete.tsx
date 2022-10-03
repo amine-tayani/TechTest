@@ -1,5 +1,6 @@
-import clsx from "clsx";
 import * as React from "react";
+import clsx from "clsx";
+import { useSpring, animated } from "react-spring";
 import { IResult, SearchAutocompleteProps } from "../types/autocomplete";
 
 const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
@@ -115,7 +116,9 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
           onChange={onChange}
           type="text"
           className={clsx(
-            "w-full pl-10 p-4 caret-blue-600 rounded-lg placeholder:font-medium placeholder:text-[#747980] text-lg font-medium focus:outline-none text-slate-200  shadow bg-[#2b2c2e]"
+            "w-full pl-10 p-4 caret-blue-600 rounded-lg text-lg font-medium",
+            "text-slate-200 shadow bg-[#2b2c2e]",
+            " placeholder:font-medium placeholder:text-[#747980] focus:outline-none"
           )}
           placeholder="Search for keyword"
           style={{
@@ -128,26 +131,16 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
           }}
         />
 
-        <div
-          className={clsx(
-            "flex absolute rounded-lg inset-y-0 right-0 items-center mx-4 pointer-events-none",
-            {
-              hidden: focused && searchString !== "",
-              block: !focused,
-            }
-          )}
-        >
-          <div className="text-[#8e9299] shadow-lg font-semibold bg-[#393a3c] py-1 px-2.5 rounded-md ">
-            ⌘ +<span className="ml-2">X</span>
-          </div>
-        </div>
         {showSuggestions && searchString && (
-          <button
-            onClick={clearSearchInput}
-            className="absolute flex items-center right-0 inset-y-4 mr-6 text-xs text-[#8e9299] shadow-lg font-semibold bg-[#393a3c] py-1 px-1.5 rounded-md"
+          <span
+            className={clsx(
+              "absolute right-0 inset-y-4 flex items-center",
+              "bg-[#393a3c] text-xs text-[#8e9299] font-semibold",
+              "mr-6 py-1 px-1.5 rounded-md shadow-lg"
+            )}
           >
             ESC
-          </button>
+          </span>
         )}
       </div>
       <div
@@ -157,19 +150,12 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         }}
         className="mx-4"
       >
-        <ul
-          className={clsx("max-w-md mx-4 px-1", {
-            "opacity-0 max-h-0 transition-all duration-500 ease-in-out overflow-hidden":
-              !showSuggestions || searchString === "",
-            "opacity-100 max-h-full transition-all duration-500 ease-in-out":
-              showSuggestions && searchString !== "",
-          })}
-        >
+        <ul className={clsx("max-w-md mx-4 px-1")}>
           {showSuggestions && searchString ? (
             filteredSuggestions.length ? (
               filteredSuggestions.map((user, id) => (
                 <li
-                  className="py-1 px-6 rounded-lg mb-3"
+                  className="py-2 px-6 rounded-lg mb-3"
                   key={id}
                   style={{
                     transition: "all 0.135s ease-in-out",
@@ -181,13 +167,13 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
                       <img
-                        className="w-10 h-10 rounded-full bg-neutral-200"
+                        className="w-8 h-8 rounded-lg bg-neutral-200"
                         src={user.picture.thumbnail}
                         alt={user.name.first}
                       />
                     </div>
                     <div className="flex-1 min-w-0 text-sm tracking-wide">
-                      {highlightText(user.name.first)}
+                      {highlightText(user.name.first)} {user.name.last}
                     </div>
                   </div>
                 </li>
@@ -201,6 +187,35 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
             )
           ) : null}
         </ul>
+        <div
+          className={clsx("flex items-center justify-between mx-4 mt-8", {
+            hidden: !showSuggestions || !searchString,
+          })}
+        >
+          <p className="text-sm font-[400] text-neutral-500">
+            {filteredSuggestions.length} results
+          </p>
+          <div className="text-sm font-[400] text-neutral-500">
+            Use
+            <span
+              className={clsx(
+                "bg-[#393a3c] ml-2 text-xs text-[#8e9299] font-semibold",
+                "py-1 px-1.5 rounded-md shadow-lg"
+              )}
+            >
+              ↑
+            </span>
+            <span
+              className={clsx(
+                "bg-[#393a3c] mx-2 text-xs text-[#8e9299] font-semibold",
+                "py-1 px-1.5 rounded-md shadow-lg"
+              )}
+            >
+              ↓
+            </span>
+            to navigate
+          </div>
+        </div>
       </div>
     </div>
   );
