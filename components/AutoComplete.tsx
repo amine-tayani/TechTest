@@ -114,7 +114,9 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
           ref={searchBarRef}
           onChange={onChange}
           type="text"
-          className={`w-full pl-10 p-4 caret-blue-600 rounded-lg placeholder:font-medium placeholder:text-neutral-500 text-lg font-medium  focus:outline-none text-slate-200  shadow-sm bg-[#2b2c2e]`}
+          className={clsx(
+            "w-full pl-10 p-4 caret-blue-600 rounded-lg placeholder:font-medium placeholder:text-[#747980] text-lg font-medium focus:outline-none text-slate-200  shadow bg-[#2b2c2e]"
+          )}
           placeholder="Search for keyword"
           style={{
             borderBottom:
@@ -130,7 +132,8 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
           className={clsx(
             "flex absolute rounded-lg inset-y-0 right-0 items-center mx-4 pointer-events-none",
             {
-              hidden: focused,
+              hidden: focused && searchString !== "",
+              block: !focused,
             }
           )}
         >
@@ -141,9 +144,9 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         {showSuggestions && searchString && (
           <button
             onClick={clearSearchInput}
-            className="absolute right-0 w-7 h-6 inset-y-4 mr-6 text-[0.5em] font-semibold rounded-md bg-neutral-600 text-neutral-300 border-neutral-500"
+            className="absolute flex items-center right-0 inset-y-4 mr-6 text-xs text-[#8e9299] shadow-lg font-semibold bg-[#393a3c] py-1 px-1.5 rounded-md"
           >
-            CLR
+            ESC
           </button>
         )}
       </div>
@@ -154,7 +157,14 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         }}
         className="mx-4"
       >
-        <ul className="max-w-md mx-4 px-1">
+        <ul
+          className={clsx("max-w-md mx-4 px-1", {
+            "opacity-0 max-h-0 transition-all duration-500 ease-in-out overflow-hidden":
+              !showSuggestions || searchString === "",
+            "opacity-100 max-h-full transition-all duration-500 ease-in-out":
+              showSuggestions && searchString !== "",
+          })}
+        >
           {showSuggestions && searchString ? (
             filteredSuggestions.length ? (
               filteredSuggestions.map((user, id) => (
@@ -162,6 +172,7 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
                   className="py-1 px-6 rounded-lg mb-3"
                   key={id}
                   style={{
+                    transition: "all 0.135s ease-in-out",
                     backgroundColor:
                       activeSuggestion === id ? "#0284c7" : "#3c3d41",
                     color: activeSuggestion === id ? "#eee" : "#c1c2c6",
