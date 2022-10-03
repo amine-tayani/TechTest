@@ -1,6 +1,5 @@
 import * as React from "react";
 import clsx from "clsx";
-import { useSpring, animated } from "react-spring";
 import { IResult, SearchAutocompleteProps } from "../types/autocomplete";
 
 const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
@@ -89,7 +88,7 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
   };
 
   return (
-    <div className=" w-1/3 max-w-lg bg-[#28292b] rounded-xl shadow-lg">
+    <div className=" w-1/3 max-w-lg bg-[#28292b] rounded-xl mt-20 shadow-lg">
       <div className="relative">
         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
           <svg
@@ -189,13 +188,16 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         </ul>
         <div
           className={clsx("flex items-center justify-between mx-4 mt-8", {
-            hidden: !showSuggestions || !searchString,
+            hidden:
+              !showSuggestions ||
+              !searchString ||
+              filteredSuggestions.length === 0,
           })}
         >
-          <p className="text-sm font-[400] text-neutral-500">
+          <p className="text-sm font-medium text-neutral-500">
             {filteredSuggestions.length} results
           </p>
-          <div className="text-sm font-[400] text-neutral-500">
+          <div className="text-sm font-medium text-neutral-500">
             Use
             <span
               className={clsx(
