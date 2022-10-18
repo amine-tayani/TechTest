@@ -12,5 +12,5 @@ export interface IResult {
 }
 
 export interface SearchAutocompleteProps {
-  items?: IResult[];
+  items: IResult[];
 }

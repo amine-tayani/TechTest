@@ -1,11 +1,7 @@
 import * as React from "react";
 import type { NextPage } from "next";
-import dynamic from "next/dynamic";
-import { useGetUsersQuery } from "../redux/usersApi";
-
-const AutoComplete = dynamic(() => import("../components/AutoComplete"), {
-  ssr: false,
-});
+import { useGetUsersQuery } from "@/redux/usersApi";
+import AutoComplete from "@/components/AutoComplete";
 
 const Home: NextPage = () => {
   const [items, setItems] = React.useState([]);

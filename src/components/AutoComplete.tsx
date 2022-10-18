@@ -1,6 +1,8 @@
 import * as React from "react";
 import clsx from "clsx";
-import { IResult, SearchAutocompleteProps } from "../types/autocomplete";
+import { IResult, SearchAutocompleteProps } from "@/types/index";
+import SearchInput from "@/components/SearchInput";
+import SVGSearchIcon from "@/components/icons/SVGSearchIcon";
 
 const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
   const [activeSuggestion, setActiveSuggestion] = React.useState(0);
@@ -21,9 +23,6 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-
-  const onFocused = () => setFocused(true);
-  const onBlurred = () => setFocused(false);
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const searchString = e.currentTarget.value;
@@ -91,27 +90,12 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
     <div className=" w-1/3 max-w-lg bg-[#28292b] rounded-xl mt-20 shadow-lg">
       <div className="relative">
         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-          <svg
-            className="h-6 w-6 text-neutral-500"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M15.5 15.5L19 19M5 11a6 6 0 1012 0 6 6 0 00-12 0z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <SVGSearchIcon />
         </div>
-        <input
-          onFocus={onFocused}
-          onBlur={onBlurred}
+
+        <SearchInput
+          dataCy="search-input"
           onKeyDown={onKeyDown}
-          ref={searchBarRef}
           onChange={onChange}
           type="text"
           className={clsx(
@@ -149,7 +133,10 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         }}
         className="mx-4"
       >
-        <ul className={clsx("max-w-md mx-4 px-1")}>
+        <ul
+          data-cy="autocomplete-results"
+          className={clsx("max-w-md mx-4 px-1")}
+        >
           {showSuggestions && searchString ? (
             filteredSuggestions.length ? (
               filteredSuggestions.map((user, id) => (

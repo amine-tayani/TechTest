@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { SearchAutocompleteProps } from "../types/autocomplete";
+import { SearchAutocompleteProps } from "@/types/index";
 
 export const usersApi = createApi({
   reducerPath: "usersApi",

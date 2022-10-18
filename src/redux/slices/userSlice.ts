@@ -1,6 +1,5 @@
+import { IResult } from "@/types/index";
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-
-import { IResult } from "../../types/autocomplete";
 
 export interface IUserState {
   users: IResult[];
