@@ -3,11 +3,11 @@ import clsx from "clsx";
 import { IResult, SearchAutocompleteProps } from "@/types/index";
 import SearchInput from "@/components/SearchInput";
 import SVGSearchIcon from "@/components/icons/SVGSearchIcon";
+import Results from "@/components/Results";
 
 const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
   const [activeSuggestion, setActiveSuggestion] = React.useState(0);
   const searchBarRef = React.useRef<HTMLInputElement>(null);
-  const [focused, setFocused] = React.useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = React.useState<
     IResult[]
   >([]);
@@ -19,6 +19,7 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
       if (e.ctrlKey && e.key === "x") {
         searchBarRef.current?.focus();
       }
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") e.preventDefault();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -34,23 +35,6 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
     setFilteredSuggestions(filteredSuggestions || []);
     setShowSuggestions(true);
     setSearchString(e.currentTarget.value);
-  };
-
-  const highlightText = (text: string) => {
-    const chars = text.split(new RegExp(`(${searchString})`, "gi"));
-    return (
-      <span>
-        {chars.map((letter, i) =>
-          letter.toLowerCase() === searchString.toLowerCase() ? (
-            <span key={i} className="font-bold text-white">
-              {letter}
-            </span>
-          ) : (
-            letter
-          )
-        )}
-      </span>
-    );
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -94,6 +78,7 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         </div>
 
         <SearchInput
+          showSuggestions={showSuggestions}
           dataCy="search-input"
           onKeyDown={onKeyDown}
           onChange={onChange}
@@ -113,99 +98,13 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
                 : "0.375rem",
           }}
         />
-
-        {showSuggestions && searchString && (
-          <span
-            className={clsx(
-              "absolute right-0 inset-y-4 flex items-center",
-              "bg-[#393a3c] text-xs text-[#8e9299] font-semibold",
-              "mr-6 py-1 px-1.5 rounded-md shadow-lg"
-            )}
-          >
-            ESC
-          </span>
-        )}
       </div>
-      <div
-        style={{
-          marginTop: showSuggestions && searchString ? "2rem" : "0rem",
-          marginBottom: showSuggestions && searchString ? "2rem" : "0rem",
-        }}
-        className="mx-4"
-      >
-        <ul
-          data-cy="autocomplete-results"
-          className={clsx("max-w-md mx-4 px-1")}
-        >
-          {showSuggestions && searchString ? (
-            filteredSuggestions.length ? (
-              filteredSuggestions.map((user, id) => (
-                <li
-                  className="py-2 px-6 rounded-lg mb-3"
-                  key={id}
-                  style={{
-                    transition: "all 0.135s ease-in-out",
-                    backgroundColor:
-                      activeSuggestion === id ? "#0284c7" : "#3c3d41",
-                    color: activeSuggestion === id ? "#eee" : "#c1c2c6",
-                  }}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="w-8 h-8 rounded-lg bg-neutral-200"
-                        src={user.picture.thumbnail}
-                        alt={user.name.first}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0 text-sm tracking-wide">
-                      {highlightText(user.name.first)} {user.name.last}
-                    </div>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <div className="flex items-center justify-center">
-                <p className="text-sm font-[500] text-gray-500">
-                  No options are suggested
-                </p>
-              </div>
-            )
-          ) : null}
-        </ul>
-        <div
-          className={clsx("flex items-center justify-between mx-4 mt-8", {
-            hidden:
-              !showSuggestions ||
-              !searchString ||
-              filteredSuggestions.length === 0,
-          })}
-        >
-          <p className="text-sm font-medium text-neutral-500">
-            {filteredSuggestions.length} results
-          </p>
-          <div className="text-sm font-medium text-neutral-500">
-            Use
-            <span
-              className={clsx(
-                "bg-[#393a3c] ml-2 text-xs text-[#8e9299] font-semibold",
-                "py-1 px-1.5 rounded-md shadow-lg"
-              )}
-            >
-              ↑
-            </span>
-            <span
-              className={clsx(
-                "bg-[#393a3c] mx-2 text-xs text-[#8e9299] font-semibold",
-                "py-1 px-1.5 rounded-md shadow-lg"
-              )}
-            >
-              ↓
-            </span>
-            to navigate
-          </div>
-        </div>
-      </div>
+      <Results
+        activeSuggestion={activeSuggestion}
+        showSuggestions={showSuggestions}
+        results={filteredSuggestions}
+        searchString={searchString}
+      />
     </div>
   );
 };

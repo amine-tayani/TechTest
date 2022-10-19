@@ -1,8 +1,10 @@
+import clsx from "clsx";
 import * as React from "react";
 
 interface SearchInputProps {
   onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  showSuggestions: boolean;
   className: string;
   placeholder: string;
   type: string;
@@ -13,6 +15,7 @@ interface SearchInputProps {
 const SearchInput: React.FC<SearchInputProps> = ({
   onKeyDown,
   onChange,
+  showSuggestions,
   className,
   placeholder,
   type,
@@ -39,6 +42,18 @@ const SearchInput: React.FC<SearchInputProps> = ({
         type={type}
         style={style}
       />
+      {/* you need to check if search string is empty && searchString */}
+      {showSuggestions && (
+        <span
+          className={clsx(
+            "absolute right-0 inset-y-4 flex items-center",
+            "bg-[#393a3c] text-xs text-[#8e9299] font-semibold",
+            "mr-6 py-1 px-1.5 rounded-md shadow-lg"
+          )}
+        >
+          ESC
+        </span>
+      )}
     </div>
   );
 };
