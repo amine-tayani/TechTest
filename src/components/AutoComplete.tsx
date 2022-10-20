@@ -78,6 +78,7 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
         </div>
 
         <SearchInput
+          searchString={searchString}
           showSuggestions={showSuggestions}
           dataCy="search-input"
           onKeyDown={onKeyDown}

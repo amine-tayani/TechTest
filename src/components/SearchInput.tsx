@@ -7,6 +7,7 @@ interface SearchInputProps {
   showSuggestions: boolean;
   className: string;
   placeholder: string;
+  searchString: string;
   type: string;
   style: React.CSSProperties;
   dataCy: string;
@@ -21,6 +22,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   type,
   style,
   dataCy,
+  searchString,
 }) => {
   const [focused, setFocused] = React.useState(false);
   const ref = React.useRef<HTMLInputElement>(null);
@@ -43,7 +45,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         style={style}
       />
       {/* you need to check if search string is empty && searchString */}
-      {showSuggestions && (
+      {showSuggestions && searchString && (
         <span
           className={clsx(
             "absolute right-0 inset-y-4 flex items-center",
