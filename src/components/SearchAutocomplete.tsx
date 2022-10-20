@@ -14,17 +14,6 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
   const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [searchString, setSearchString] = React.useState("");
 
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "x") {
-        searchBarRef.current?.focus();
-      }
-      if (e.key === "ArrowDown" || e.key === "ArrowUp") e.preventDefault();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const searchString = e.currentTarget.value;
 
@@ -37,19 +26,23 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
     setSearchString(e.currentTarget.value);
   };
 
+  const clearSearchInput = () => {
+    setShowSuggestions(false);
+    if (searchBarRef.current !== null) {
+      searchBarRef.current.value = "";
+    }
+  };
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
-      case "Enter":
-        setActiveSuggestion(0);
-        setShowSuggestions(false);
-        setSearchString(filteredSuggestions[activeSuggestion].name.first);
-        break;
       case "ArrowUp":
+        e.preventDefault();
         if (activeSuggestion === 0) {
           setActiveSuggestion(filteredSuggestions.length - 1);
         } else setActiveSuggestion(activeSuggestion - 1);
         break;
       case "ArrowDown":
+        e.preventDefault();
         if (activeSuggestion === filteredSuggestions.length) {
           return;
         } else if (activeSuggestion === filteredSuggestions.length - 1) {
@@ -60,13 +53,6 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
         clearSearchInput();
       default:
         break;
-    }
-  };
-
-  const clearSearchInput = () => {
-    setShowSuggestions(false);
-    if (searchBarRef.current !== null) {
-      searchBarRef.current.value = "";
     }
   };
 
