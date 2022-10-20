@@ -5,7 +5,7 @@ import SearchInput from "@/components/SearchInput";
 import SVGSearchIcon from "@/components/icons/SVGSearchIcon";
 import Results from "@/components/Results";
 
-const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
+const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
   const [activeSuggestion, setActiveSuggestion] = React.useState(0);
   const searchBarRef = React.useRef<HTMLInputElement>(null);
   const [filteredSuggestions, setFilteredSuggestions] = React.useState<
@@ -28,7 +28,7 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const searchString = e.currentTarget.value;
 
-    const filteredSuggestions = items?.filter((suggestion) =>
+    const filteredSuggestions = results?.filter((suggestion) =>
       suggestion.name.first.toLowerCase().startsWith(searchString.toLowerCase())
     );
     setActiveSuggestion(0);
@@ -109,4 +109,4 @@ const AutoComplete: React.FC<SearchAutocompleteProps> = ({ items }) => {
     </div>
   );
 };
-export default AutoComplete;
+export default SearchAutocomplete;

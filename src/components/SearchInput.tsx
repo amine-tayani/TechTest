@@ -44,7 +44,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
         type={type}
         style={style}
       />
-      {/* you need to check if search string is empty && searchString */}
       {showSuggestions && searchString && (
         <span
           className={clsx(
