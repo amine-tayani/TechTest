@@ -8,9 +8,9 @@ interface SearchInputProps {
   className: string;
   placeholder: string;
   searchString: string;
-  type: string;
   style: React.CSSProperties;
   dataCy: string;
+  inputVal: string;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -19,13 +19,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
   showSuggestions,
   className,
   placeholder,
-  type,
   style,
   dataCy,
+  inputVal,
   searchString,
 }) => {
   const [focused, setFocused] = React.useState(false);
-  const ref = React.useRef<HTMLInputElement>(null);
 
   const onFocus = () => setFocused(true);
   const onBlur = () => setFocused(false);
@@ -33,15 +32,15 @@ const SearchInput: React.FC<SearchInputProps> = ({
   return (
     <div className="flex flex-col">
       <input
+        value={inputVal}
         data-cy={dataCy}
         onFocus={onFocus}
         onBlur={onBlur}
         onKeyDown={onKeyDown}
-        ref={ref}
         onChange={onChange}
         className={className}
         placeholder={placeholder}
-        type={type}
+        type="text"
         style={style}
       />
       {showSuggestions && searchString && (

@@ -7,16 +7,16 @@ import Results from "@/components/Results";
 
 const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
   const [activeSuggestion, setActiveSuggestion] = React.useState(0);
-  const searchBarRef = React.useRef<HTMLInputElement>(null);
+  const [searchString, setSearchString] = React.useState("");
+  const [value, setValue] = React.useState("");
+  const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = React.useState<
     IResult[]
   >([]);
-  const [showSuggestions, setShowSuggestions] = React.useState(false);
-  const [searchString, setSearchString] = React.useState("");
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const searchString = e.currentTarget.value;
-
+    setValue(searchString);
     const filteredSuggestions = results?.filter((suggestion) =>
       suggestion.name.first.toLowerCase().startsWith(searchString.toLowerCase())
     );
@@ -27,10 +27,8 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
   };
 
   const clearSearchInput = () => {
+    setValue("");
     setShowSuggestions(false);
-    if (searchBarRef.current !== null) {
-      searchBarRef.current.value = "";
-    }
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -64,18 +62,18 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
         </div>
 
         <SearchInput
+          inputVal={value}
           searchString={searchString}
           showSuggestions={showSuggestions}
           dataCy="search-input"
           onKeyDown={onKeyDown}
           onChange={onChange}
-          type="text"
+          placeholder="Search for keyword"
           className={clsx(
             "w-full pl-10 p-4 caret-blue-600 rounded-lg text-lg font-medium",
-            "text-slate-200 shadow bg-[#2b2c2e]",
+            "bg-[#2b2c2e] text-slate-200 shadow",
             " placeholder:font-medium placeholder:text-[#747980] focus:outline-none"
           )}
-          placeholder="Search for keyword"
           style={{
             borderBottom:
               showSuggestions && searchString ? "1px solid #3c3d41" : "none",
