@@ -1,12 +1,13 @@
 import * as React from "react";
 import clsx from "clsx";
-import { IResult, SearchAutocompleteProps } from "@/types/index";
 import SearchInput from "@/components/SearchInput";
-import SVGSearchIcon from "@/components/icons/SVGSearchIcon";
 import Results from "@/components/Results";
+import SVGSearchIcon from "@/components/icons/SVGSearchIcon";
+import { IResult, SearchAutocompleteProps } from "@/types/index";
 
 const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
   const [activeSuggestion, setActiveSuggestion] = React.useState(0);
+  const [showKeys, setShowKeys] = React.useState(false);
   const [searchString, setSearchString] = React.useState("");
   const [value, setValue] = React.useState("");
   const [showSuggestions, setShowSuggestions] = React.useState(false);
@@ -16,9 +17,12 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const searchString = e.currentTarget.value;
-    setValue(searchString);
+    setValue(searchString.toLowerCase());
     const filteredSuggestions = results?.filter((suggestion) =>
-      suggestion.name.first.toLowerCase().startsWith(searchString.toLowerCase())
+      suggestion.name.first
+        .concat(suggestion.name.last)
+        .toLowerCase()
+        .startsWith(searchString.toLowerCase())
     );
     setActiveSuggestion(0);
     setFilteredSuggestions(filteredSuggestions || []);
@@ -30,6 +34,19 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
     setValue("");
     setShowSuggestions(false);
   };
+
+  const inputStyles = {
+    borderBottom:
+      showSuggestions && searchString ? "1px solid #3c3d41" : "none",
+    borderRadius:
+      showSuggestions && searchString ? "0.375rem 0.375rem 0 0" : "0.375rem",
+  };
+
+  const inputClassNames = clsx(
+    "w-full pl-10 p-4 caret-blue-600 rounded-lg text-lg font-medium",
+    "bg-[#2b2c2e] text-slate-200 shadow",
+    " placeholder:font-medium placeholder:text-[#747980] focus:outline-none"
+  );
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
@@ -62,6 +79,7 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
         </div>
 
         <SearchInput
+          setShowKeys={setShowKeys}
           inputVal={value}
           searchString={searchString}
           showSuggestions={showSuggestions}
@@ -69,19 +87,8 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
           onKeyDown={onKeyDown}
           onChange={onChange}
           placeholder="Search for keyword"
-          className={clsx(
-            "w-full pl-10 p-4 caret-blue-600 rounded-lg text-lg font-medium",
-            "bg-[#2b2c2e] text-slate-200 shadow",
-            " placeholder:font-medium placeholder:text-[#747980] focus:outline-none"
-          )}
-          style={{
-            borderBottom:
-              showSuggestions && searchString ? "1px solid #3c3d41" : "none",
-            borderRadius:
-              showSuggestions && searchString
-                ? "0.375rem 0.375rem 0 0"
-                : "0.375rem",
-          }}
+          className={inputClassNames}
+          style={inputStyles}
         />
       </div>
       <Results
@@ -89,6 +96,7 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ results }) => {
         showSuggestions={showSuggestions}
         results={filteredSuggestions}
         searchString={searchString}
+        showKeys={showKeys}
       />
     </div>
   );

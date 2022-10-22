@@ -7,6 +7,7 @@ interface ResultsProps {
   showSuggestions: boolean;
   results: IResult[];
   activeSuggestion: number;
+  showKeys: boolean;
 }
 
 const Results: React.FC<ResultsProps> = ({
@@ -14,18 +15,19 @@ const Results: React.FC<ResultsProps> = ({
   showSuggestions,
   activeSuggestion,
   results,
+  showKeys,
 }) => {
   const highlightText = (text: string) => {
-    const chars = text.split(new RegExp(`(${searchString})`, "gi"));
+    const textParts = text.split(new RegExp(`(${searchString})`, "gi"));
     return (
       <span>
-        {chars.map((letter, i) =>
-          letter.toLowerCase() === searchString.toLowerCase() ? (
+        {textParts.map((part, i) =>
+          part.toLowerCase() === searchString.toLowerCase() ? (
             <span key={i} className="font-bold text-white">
-              {letter}
+              {part}
             </span>
           ) : (
-            letter
+            part
           )
         )}
       </span>
@@ -62,7 +64,7 @@ const Results: React.FC<ResultsProps> = ({
                     />
                   </div>
                   <div className="flex-1 min-w-0 text-sm tracking-wide">
-                    {highlightText(user.name.first)} {user.name.last}
+                    {highlightText(user.name.first + " " + user.name.last)}
                   </div>
                 </div>
               </li>
@@ -76,35 +78,65 @@ const Results: React.FC<ResultsProps> = ({
           )
         ) : null}
       </ul>
-      <div
-        className={clsx("flex items-center justify-between mx-4 mt-8", {
-          hidden: !showSuggestions || !searchString || results.length === 0,
-        })}
-      >
-        <p className="text-sm font-medium text-neutral-500">
-          {results.length} results
-        </p>
-        <div className="text-sm font-medium text-neutral-500">
-          Use
-          <span
-            className={clsx(
-              "bg-[#393a3c] ml-2 text-xs text-[#8e9299] font-semibold",
-              "py-1 px-1.5 rounded-md shadow-lg"
-            )}
-          >
-            ↑
-          </span>
-          <span
-            className={clsx(
-              "bg-[#393a3c] mx-2 text-xs text-[#8e9299] font-semibold",
-              "py-1 px-1.5 rounded-md shadow-lg"
-            )}
-          >
-            ↓
-          </span>
-          to navigate
+
+      {showKeys && (
+        <div
+          className={clsx("flex py-4 space-x-2", {
+            hidden: results.length === 0,
+          })}
+        >
+          <div className="text-sm font-medium text-neutral-500">
+            <span
+              className={clsx(
+                "bg-[#393a3c] ml-2 text-xs text-[#8e9299] font-semibold",
+                "py-1 px-1.5 rounded-md shadow-lg"
+              )}
+            >
+              ↑
+            </span>
+            <span
+              className={clsx(
+                "bg-[#393a3c] mx-2 text-xs text-[#8e9299] font-semibold",
+                "py-1 px-1.5 rounded-md shadow-lg"
+              )}
+            >
+              ↓
+            </span>
+            to navigate
+          </div>
+          <div className="text-sm font-medium text-neutral-500">
+            <span
+              className={clsx(
+                "bg-[#393a3c] mx-2 text-xs text-[#8e9299] font-semibold",
+                "py-1 px-1.5 rounded-md shadow-lg"
+              )}
+            >
+              ESC
+            </span>
+            to exit
+          </div>
+          <div className="text-sm font-medium text-neutral-500">
+            <span
+              className={clsx(
+                "bg-[#393a3c] ml-2 mr-1 text-xs text-[#8e9299] font-semibold",
+                "py-1 px-1.5 rounded-md shadow-lg"
+              )}
+            >
+              CTRL
+            </span>
+            +
+            <span
+              className={clsx(
+                "bg-[#393a3c] ml-1 mr-2 text-xs text-[#8e9299] font-semibold",
+                "py-1 px-1.5 rounded-md shadow-lg"
+              )}
+            >
+              K
+            </span>
+            to open search
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

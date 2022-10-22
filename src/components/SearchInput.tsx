@@ -1,9 +1,9 @@
-import clsx from "clsx";
 import * as React from "react";
 
 interface SearchInputProps {
   onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  setShowKeys: React.Dispatch<React.SetStateAction<boolean>>;
   showSuggestions: boolean;
   className: string;
   placeholder: string;
@@ -16,26 +16,40 @@ interface SearchInputProps {
 const SearchInput: React.FC<SearchInputProps> = ({
   onKeyDown,
   onChange,
-  showSuggestions,
+  setShowKeys,
   className,
   placeholder,
   style,
   dataCy,
   inputVal,
-  searchString,
 }) => {
-  const [focused, setFocused] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const onFocus = () => setFocused(true);
-  const onBlur = () => setFocused(false);
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "k") {
+        e.preventDefault();
+        e.stopPropagation();
+        inputRef.current?.focus();
+        setShowKeys(true);
+      }
+      if (e.key === "Escape") {
+        inputRef.current?.blur();
+        setShowKeys(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col">
       <input
+        ref={inputRef}
         value={inputVal}
         data-cy={dataCy}
-        onFocus={onFocus}
-        onBlur={onBlur}
         onKeyDown={onKeyDown}
         onChange={onChange}
         className={className}
@@ -43,17 +57,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
         type="text"
         style={style}
       />
-      {showSuggestions && searchString && (
-        <span
-          className={clsx(
-            "absolute right-0 inset-y-4 flex items-center",
-            "bg-[#393a3c] text-xs text-[#8e9299] font-semibold",
-            "mr-6 py-1 px-1.5 rounded-md shadow-lg"
-          )}
-        >
-          ESC
-        </span>
-      )}
     </div>
   );
 };
